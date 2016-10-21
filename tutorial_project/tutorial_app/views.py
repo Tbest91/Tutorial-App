@@ -1,7 +1,10 @@
-from django.conf.urls import patterns, url 
-from tutorial_app import views
-
+from django.shortcuts import render
 from django.http import HttpResponse
 
+
 def index(request):
-    return HttpResponse("Hello world!")
+	context_dict = {'boldmessage':'Sharinnegan Boiiii'}
+	return render(request, 'index.html', context_dict)
+
+def about(request):
+	return HttpResponse('About Us')
