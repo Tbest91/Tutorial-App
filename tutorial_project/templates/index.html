@@ -4,8 +4,27 @@
 	<title>Sharinnegan Boiiii</title>
 </head>
 <body>
+
 <h1>SHARINGAN CRAZY</h1>
+<a href="/about">About Us</a>
+{% if categories %}
+	{%for category in categories %}
+	<a href="category/{{category.slug}}"><p>{{ category.name}}</p> </a>
+
+	{%endfor %}
+{% else %}
+	<p>There are no categories</p>
+{% endif %}
+{% if pages %}
+	{% for page in pages %}
+	<a href= "{{ page.url }}"> {{ page.title }}</a>
+	{% endfor %}
+{% else %}
+	<p>There are no pages</p>
+	{% endif %}
+
 <strong>{{ boldmessage }}</strong><br />
+
 <img style="width:50%" src="{% static 'images/sasuke.jpg' %}">
 
 </body>
