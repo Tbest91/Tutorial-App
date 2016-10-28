@@ -9,14 +9,12 @@
 		<ul>
 				{% for page in pages %}
 				<ul><a href="{{pages.url}}">{{page.title}}</a></ul>
-				(% endfor %)
+				{% endfor %}
 		</ul>
-
-
-	{% else %}
-		<p>This category hasno pages</p>
-	{% endif %}
-
+		{% else %}
+			<p>This category has no pages</p>
+		{% endif %}
+	<a href="/category/{{category.slug}}/add-page/">Add Pages</a>
 	{% else %}
 		<p>The specified category {{ category.name }} does not exist</p>
 	{% endif %}

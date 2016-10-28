@@ -7,11 +7,12 @@
 
 <h1>SHARINGAN CRAZY</h1>
 <a href="/about">About Us</a>
+<a href="/add-category/">Add Category</a>
 {% if categories %}
 	{%for category in categories %}
 	<a href="category/{{category.slug}}"><p>{{ category.name}}</p> </a>
 
-	{%endfor %}
+	{% endfor %}
 {% else %}
 	<p>There are no categories</p>
 {% endif %}
