@@ -1,14 +1,14 @@
-$<!DOCTYPE html>
-<html>
-<head>
-	<title>Register</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block body_block %}
 	<h1>Register with the Tutorial App</h1>
 
 	{% if registered %}
 	<strong>Thanks for registering!</strong>
-	<a href="/">Return Home</a>
+	<a href="{% url 'index' %}">Return Home</a>
 	{% else %}
 	<strong>Register Here!</strong>
 
@@ -23,5 +23,4 @@ $<!DOCTYPE html>
 	<input type="submit" name="submit" value="Register">
 	</form>
 	{% endif %}
-</body>
-</html>
+{% endblock %}
