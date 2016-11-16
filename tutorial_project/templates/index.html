@@ -2,40 +2,60 @@
 {% load static %}
 
 
-<body>
-
 {% block body_block %}
+<center>
+<div class="page-header">
+	{% if user.is_authenticated %}
+	<h1 style="font-size: 36px">Welcome to Tutorial App {{ user.username }}</h1>
+	{% else %}
+	<h1>Tutorials</h1>
+	{% endif %}
+</div>
+<img style="width:50%" src="{% static 'images/sasuke.jpg' %}">
 
-{% if user.is_authenticated %}
-<h1>Welcome to Tutorial App {{ user.username }}</h1>
-{% else %}
-<h1>Tutorials</h1>
-{% endif %}
+<br>Visits: {{visits}}<br>
 
-
-<a href="/about">About Us</a>
+<div class="row placeholders">
+	<div class="col-xs-12 col-md-6 placeholder">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Categories</h3>
+			</div>
+		</div>
 
 {% if categories %}
+	<ul class="list-group">
 	{%for category in categories %}
-	<a href="{% url 'category' category.slug %}"><p>{{ category.name }}</p> </a>
+		<li class="list-group-item"><a href="{% url 'category' category.slug %}"><p>{{ category.name }}</p> </a></li>
 
 	{% endfor %}
+	</ul>
+
 {% else %}
 	<p>There are no categories</p>
 {% endif %}
+</div>
+
+
+	<div class="col-xs-12 col-md-6 placeholder">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Pages</h3>
+			</div>
+		</div>
+
 {% if pages %}
-	{% for page in pages %}
-	<a href= "{{ page.url }}"> {{ page.title }}</a>
+	<ul class="list-group">
+{% for page in pages %}
+	<li class="list-group-item"><a href= "{{ page.url }}">{{ page.title }}</a></li>
 	{% endfor %}
+
 {% else %}
 	<p>There are no pages</p>
 	{% endif %}
-
+</ul>
+</div>
 <strong>{{ boldmessage }}</strong><br />
 
-<img style="width:50%" src="{% static 'images/sasuke.jpg' %}">
-
-</body>
-</html>
 
 {% endblock %}

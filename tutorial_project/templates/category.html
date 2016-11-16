@@ -5,13 +5,17 @@
 	
 {% block body_block %}
 
-	</h1>>{{ category.name }}</h1>
+<div class="page-header">
+
+	</h1><b><i>{{ category.name }}</b></i></h1>
+
+</div>
 
 	{% if category %}
 		{% if pages %}
 		<ul>
 				{% for page in pages %}
-				<ul><a href="{{pages.url}}">{{page.title}}</a></ul>
+				<ul><a href="{{page.url}}">{{page.title}}</a></ul>
 				{% endfor %}
 		</ul>
 		{% else %}

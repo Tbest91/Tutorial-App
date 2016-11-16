@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load extras %}
 
 {% block title %}Add Category{% endblock %}
 
 {% block body_block %}
-
+<div class="page-header">
 	<h1>Add Category</h1>
+</div>
 	<form id= 'category_form'
 	method="post" action= '/add-category/'>
 		{% csrf_token %}
@@ -14,7 +16,11 @@
 			{% endfor %}
 
 			{% for field in form.visible_fields %}
-				{{ field }}
+			<div class='form-group'>
+				{{ field.errors }}
+				{{ field.help_text }}
+				{{ field |addcls'form-control'}}
+			</div>
 			{% endfor %}
 			<input type="submit"
 			value = "Create a Category">

@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load extras %}
 
 {% block title %}Register{% endblock %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}">
 
 {% block body_block %}
 	<h1>Register with the Tutorial App</h1>
@@ -10,15 +12,30 @@
 	<strong>Thanks for registering!</strong>
 	<a href="{% url 'index' %}">Return Home</a>
 	{% else %}
-	<strong>Register Here!</strong>
+	<strong class="form-signin-heading"><h2>Register Here!</h2></strong>
 
 	<form id='user_form' method='post' action='/register/' enctype='multipart/form-data'>
 
+	<br />
+	
+
 	{% csrf_token%}
 
-	{{ user_form.as_p }}
+	{% for field in user_form.visible_fields %}
+	<div class= 'form-group'>
+		{{fields.errors}}<br>
+		{{field.label}}<br>
+		{{field |addcls:'form-control'}}
+	</div>
+	{% endfor %}
 
-	{{ profile_form.as_p }}
+	{% for field in profile_form.visible_fields %}
+	<div class= 'form-group'>
+		{{fields.errors}}<br>
+		{{field.label}}<br>
+		{{field |addcls:'form-control'}}
+	</div>
+	{% endfor %}
 
 	<input type="submit" name="submit" value="Register">
 	</form>

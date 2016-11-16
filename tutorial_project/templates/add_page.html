@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load extras %}
 
 {% block title %}Add Page{% endblock %}
 
@@ -14,11 +15,12 @@
 		{% endfor %}
 
 		{%for field in form.invisible_fields %}
+		<div class="form-group">
 			{{ field.errors }}
 			{{ field.help_text }}
-			{{ field }}
+			{{ field |addcls'form-control' }}
 		{% endfor %}
-
+		</div>
 		<input type='submit' name='submit' value='Add a Page'>
 
 	</form>
