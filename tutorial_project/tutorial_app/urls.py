@@ -10,4 +10,8 @@ urlpatterns = patterns('',
 	url(r'^register/', views.register, name='register'),
 	url(r'^login/', views.user_login, name='login'),
 	url(r'^logout/', views.user_logout, name='logout'),
+	url(r'^goto/$',views.track_url, name='goto'),
+	url(r'^user/(?P<user_username>[\w-]+)/$',views.user_profile, name='profile'),
+	url(r'^user/(?P<user_username>[\w-]+)/edit/$',views.edit_profile, name='edit_profile')
+
 	)

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from models import Category, Page, UserProfile
@@ -6,6 +6,8 @@ from Forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from search import run_query
+
 
 
 
@@ -68,6 +70,16 @@ def about(request):
 
 def category(request, category_name_slug):
 	context_dict = {}
+	context_dict['result_list'] = None
+	context_dict['query'] = None
+
+	if request.method == 'POST':
+		query = request.POST['query'].strip()
+
+		if query:
+			result_list = run_query(query)
+			context_dict['result_list'] = result_list
+			context_dict['query'] = query
 	try:
 		category = Category.objects.get(slug=category_name_slug)
 		pages = Page.objects.filter(category=category)
@@ -79,19 +91,52 @@ def category(request, category_name_slug):
 		pass
 
 	return render(request, 'category.html', context_dict)
+
 @login_required
+
+
+def add_page(request, category_name_slug):
+	try:
+		cat =  Category.objects.get(slug=category_name_slug)
+	except Category.DoesNotExist:
+		cat = None 
+
+	if request.method == 'POST':
+		form =  PageForm(request.POST)
+
+		if form.is_valid():
+			if cat:
+				page = form.save(commit=False)
+				page.category = cat
+				page.views = 0 
+				page.save()
+				return category(request, category_name_slug)
+			else:
+				print form.errors
+		else:
+			print form.errors
+	else:
+		form = PageForm()
+
+	context_dict = {'form':form, 'category':cat, 'slug':category_name_slug }
+	return render(request, 'add_page.html', context_dict)
+
+@login_required
+
 def add_category(request):
 	if request.method == 'POST':
 		form = CategoryForm(request.POST)
 		if form.is_valid():
-			form.save(commit=True)
+			cat = form.save(commit=False)
+			cat.user = request.user
+			cat.save()
 			return index(request)
 		else:
 			print form.errors
 	else:
 		form = CategoryForm()
-	return render(request, 'add_category.html', {'form':form})
 
+	return render(request, 'add_category.html', {'form':form})
 
 @login_required
 def add_page(request, category_name_slug):
@@ -106,6 +151,7 @@ def add_page(request, category_name_slug):
 		if form.is_valid():
 			if cat:
 				page = form.save(commit=False)
+				page.user = request.user
 				page.category = cat
 				page.views = 0
 				page.save()
@@ -176,3 +222,66 @@ def user_login(request):
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/')
+
+def track_url(request):
+	page_id = None
+
+	url = '/'
+
+	if request.method == 'GET':
+		if 'page_id' in request.GET:
+			page_id = request.GET['page_id']
+			try:
+				page = Page.objects.get(id=page_id)
+				page.views = page.views + 1 
+				page.save()
+				url = page.url
+			except: 
+				pass
+	return redirect(url)
+
+def user_profile(request, user_username):
+	context_dict = {}
+	user = User.objects.get(username= user_username)
+	profile = UserProfile.objects.get(user=user)
+	context_dict['profile'] = profile_form
+	context_dict['pages'] = Page.objects.filter(user=user)
+
+
+	return render(request, 'profile.html', context_dict)
+
+@login_required
+def edit_profile(request, user_username):
+	profile = get_object_or_404(UserProfile, user__username=user_username)
+	if request.user != profile.user:
+		return HttpResponse ('Access Denied')
+
+	if request.method == 'POST':
+
+		form = UserProfileForm(data= request.POSt)
+		if form.is_valid():
+			if request.POST['website'] and request.POST['website'] != '':
+				profile.website = request.POST['website']
+			else:
+				profile.website = website
+
+			if request.POST['bio'] and request.POST['bio'] != '':
+				profile.bio = request.POST['bio']
+			else:
+				profile.bio = bio
+
+			if 'picture' in request.FILES:
+				profile.picture = request.FILES['pictures']
+			else:
+				profile.picture = pic
+
+			profile.save()
+
+			return user_profile(request, profile.user.username)
+
+		else:
+			print form.errors
+
+	else:
+		form = UserProfileForm()
+		return render(request, 'edit_profile.html', {'form':form,'profile':profile})
