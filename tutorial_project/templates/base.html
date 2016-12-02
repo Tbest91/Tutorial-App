@@ -30,7 +30,8 @@
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav navbar-right">
-						<li><a href="{% url 'index' %}">Home</a></li>
+						<li><a href="{% url 'about' %}">About Us</a></li>
+						<li><a href="{% url 'contact' %}">Contact</a></li>
 							{% if user.is_authenticated %}
 							<li><a href="{% url 'add_category' %}">Add Category</a></li>
 							<li><a href="{% url 'profile' user.username %}">{{user.username}}'s Profile'</a></li>
@@ -59,8 +60,9 @@
 		</div>
 	</div>
 	</div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-<script src="http://getbootstrap.com/asset/js/ie10-viewport-bug-workaround.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://getbootstrap.com/asset/js/ie10-viewport-bug-workaround.js"></script>
+<script type="text/javascript" src="{% static 'js/app_ajax.js' %}"></script>
 </body>
 </html>
