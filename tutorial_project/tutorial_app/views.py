@@ -2,14 +2,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User
 from models import Category, Page, UserProfile
-from Forms import CategoryForm, PageForm, UserForm, UserProfileForm, ContactForm
+from Forms import CategoryForm, PageForm, UserForm, UserProfileForm, ContactForm, PasswordRecoveryForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from search import run_query
 from suggest import get_category_list
-
-
+from django.contrib.auth.forms import PasswordChangeForm
+from django.views.generic import FormView
+from django.core.urlresolvers import reverse_lazy
+from django.contrib.auth import update_session_auth_hash
+from braces.views import LoginRequiredMixin
 
 
 def index(request):
@@ -353,6 +356,34 @@ def auto_add_page(request):
 	context_dict['pages'] = pages
 
 	return render(request, 'page_list.html', context_dict)
+
+
+# Class Page Viewing Vs. Function Page Viewing!
+
+class SettingsView(LoginRequiredMixin, FormView):
+	template_name = 'settings.html'
+	form_class = PasswordChangeForm
+	success_url = reverse_lazy('index')
+
+	def get_form(self, form_class):
+		return form_class(user= self.request.user, **self.get_form_kwargs())
+
+	def form_valid(self, form):
+		form.save()
+		update_session_auth_hash(self.request, form.user)
+		return super(SettingsView, self).form_valid(form)
+
+
+class PasswordRecoveryView(FormView):
+	template_name = "password-recovery.html"
+	form_class = PasswordRecoveryForm
+	success_url = reverse_lazy('login')
+
+	def form_valid(self,form):
+		return super(PasswordRecoveryView, self).form_valid(form)
+
+
+
 
 
 
